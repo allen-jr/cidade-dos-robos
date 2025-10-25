@@ -9,6 +9,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.RowConstraints;
 import model.Cidade;
+import model.Robo;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -24,6 +25,7 @@ public class CidadeController implements Initializable {
     private final int TAMANHO_CELULA = 29;
     private final int LINHAS = 700 / TAMANHO_CELULA;
     private final int COLUNAS = 1280 / TAMANHO_CELULA;
+    private Cidade cidade = new Cidade();
 
     @FXML
     private GridPane gridCidade;
@@ -38,6 +40,7 @@ public class CidadeController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         configurarGrid();
+        cidade.getRobos().add(new Robo(LINHAS/2, COLUNAS/2));
 
         int posicaoInicialX = COLUNAS / 2;
         int posicaoInicialY = LINHAS / 2;
@@ -65,7 +68,7 @@ public class CidadeController implements Initializable {
         gridCidade.add(image2,27,1);
         gridCidade.add(image3,35,1);
 
-        roboController = new RoboController(posicaoInicialX, posicaoInicialY, gridCidade);
+        RoboController.MoverRobo(posicaoInicialX, posicaoInicialY, gridCidade, cidade);
 
         gridCidade.setOnMouseClicked(this::clicarDestino);
 
@@ -92,6 +95,6 @@ public class CidadeController implements Initializable {
         int destinoX = (int) (event.getX() / TAMANHO_CELULA);
         int destinoY = (int) (event.getY() / TAMANHO_CELULA);
 
-        roboController.definirDestino(destinoX, destinoY);
+        RoboController.definirDestino(destinoX, destinoY, cidade.getRobos().getFirst());
     }
 }

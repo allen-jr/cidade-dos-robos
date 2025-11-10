@@ -44,6 +44,15 @@ public class Robo {
         this.destinoY = destinoY;
     }
 
+    /**Getters.
+     */
+    public int getPosicaoX() { return posicaoX; }
+    public int getPosicaoY() { return posicaoY; }
+    public boolean emMovimento(){
+        return this.emMovimento;
+    }
+    public Image getSpriteAtual() { return spriteAtual; }
+
     public Image getSprite1() {
         return sprite1;
     }
@@ -99,14 +108,9 @@ public class Robo {
         spriteAtual = (spriteAtual == sprite1) ? sprite2 : sprite1;
     }
 
-    /**
-     * Getters.
+    /**Método para executar uma ação específica do robo (o método deve ser sobrescrito nas classes derivadas)
      */
-    public int getPosicaoX() { return posicaoX; }
-    public int getPosicaoY() { return posicaoY; }
-    public boolean emMovimento(){
-        return this.emMovimento;
+    public void acaoRobo(){
+        System.out.println("sem ação");
     }
-    public Image getSpriteAtual() { return spriteAtual; }
-
 }

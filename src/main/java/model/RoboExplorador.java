@@ -18,4 +18,8 @@ public class RoboExplorador extends Robo{
         setSpriteAtual(getSprite1());
     }
 
+    @Override
+    public void acaoRobo(){
+        System.out.println("NaN");
+    }
 }

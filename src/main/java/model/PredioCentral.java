@@ -6,10 +6,10 @@ import javafx.scene.image.Image;
 public class PredioCentral extends PredioGeral{
     private int level = 1;
 
-    PredioCentral(int posicaoX, int posicaoY, Image image){
+    public PredioCentral(int posicaoX, int posicaoY){
         super.setPosicaoX(posicaoX);
         super.setPosicaoY(posicaoY);
-        super.setImage(image);
+        super.setImage(new Image(getClass().getResourceAsStream("/sprites/predioPrincipal.png")));
     }
 
     public void setLevel() {

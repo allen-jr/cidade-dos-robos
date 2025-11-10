@@ -9,15 +9,10 @@ import model.Robo;
  * Classe cotroller do robô.
  */
 public class RoboController {
-
-    /**
-     * Atributos da classe, robo, imageView e outros relacionados a animação do robô.
-     */
-    private Robo robo;
-    private Robo robo2;
-     ImageView imageView;
-    private ImageView image2;
     private long ultimoMovimento = 0, intervaloMovimento = 500_000_000;
+    private Robo roboModelo;
+    private GridPane gridCidade;
+    private ImageView sprite;
 
     /**
      * Construtor da classe que recebe as posições iniciais do robô e o GridPane da cidade. Faz as configurações do robô, o posiciona no Grid e chama a sua animação.
@@ -25,25 +20,17 @@ public class RoboController {
      * @param posicaoInicialY
      * @param gridCidade
      */
-    public RoboController(int posicaoInicialX, int posicaoInicialY, GridPane gridCidade) {
-        this.robo = new Robo(posicaoInicialX, posicaoInicialY);
-        this.robo2 = new Robo(3,3);
-        this.imageView = new ImageView(robo.getSpriteAtual());
-        this.image2 = new ImageView(robo2.getSpriteAtual());
+    public RoboController(int posicaoInicialX, int posicaoInicialY, GridPane gridCidade, Robo robo) {
+        this.roboModelo = robo;
+        this.gridCidade = gridCidade;
+        this.sprite = new ImageView(robo.getSpriteAtual());
 
-        imageView.setFitWidth(32);
-        imageView.setFitHeight(32);
-        imageView.setPreserveRatio(true);
-        imageView.setSmooth(true);
+        sprite.setFitWidth(32);
+        sprite.setFitHeight(32);
+        sprite.setPreserveRatio(true);
+        sprite.setSmooth(true);
 
-        image2.setFitWidth(32);
-        image2.setFitHeight(32);
-        image2.setPreserveRatio(true);
-        image2.setSmooth(true);
-
-        gridCidade.add(imageView, posicaoInicialX, posicaoInicialY);
-        gridCidade.add(image2,robo2.getPosicaoX(),robo2.getPosicaoY());
-
+        gridCidade.add(sprite, posicaoInicialX, posicaoInicialY);
         iniciarAnimacao();
     }
 
@@ -54,13 +41,13 @@ public class RoboController {
         new AnimationTimer() {
             @Override
             public void handle(long agora) {
-                if (agora - ultimoMovimento >= intervaloMovimento) {
-                    robo.mover();
+                if (roboModelo.emMovimento() && (agora - ultimoMovimento) >= intervaloMovimento) {
+                    roboModelo.mover();
 
-                    GridPane.setColumnIndex(imageView, robo.getPosicaoX());
-                    GridPane.setRowIndex(imageView, robo.getPosicaoY());
+                    GridPane.setColumnIndex(sprite, roboModelo.getPosicaoX());
+                    GridPane.setRowIndex(sprite, roboModelo.getPosicaoY());
 
-                    imageView.setImage(robo.getSpriteAtual());
+                    sprite.setImage(roboModelo.getSpriteAtual());
 
                     ultimoMovimento = agora;
                 }
@@ -74,12 +61,12 @@ public class RoboController {
      * @param destinoY
      */
     public void definirDestino(int destinoX, int destinoY) {
-        robo.destino(destinoX, destinoY);
+        roboModelo.destino(destinoX, destinoY);
     }
 
     /**
      * Getters.
      */
-    public Robo getRobo() { return robo; }
-    public ImageView getImageView() { return imageView; }
+    public Robo getRobo() { return roboModelo; }
+    public ImageView getSprite() { return sprite; }
 }

@@ -12,22 +12,40 @@ public class Robo {
      */
     private int posicaoX, posicaoY, destinoX, destinoY;
     private boolean emMovimento;
-    private Image sprite1, sprite2, spriteAtual;
+    private Image sprite1;
+    private Image sprite2;
+    private Image spriteAtual;
 
-    /**
-     * Construtor da classe, define as posições, o destino, se o robô está em movimento, carrega os sprites e define o sprite inicial.
-     * @param posicaoX
-     * @param posicaoY
-     */
-    public Robo(int posicaoX, int posicaoY) {
+    public void setSprite1(Image sprite1) {
+        this.sprite1 = sprite1;
+    }
+
+    public void setSprite2(Image sprite2) {
+        this.sprite2 = sprite2;
+    }
+
+    public void setSpriteAtual(Image spriteAtual) {
+        this.spriteAtual = spriteAtual;
+    }
+
+    public void setPosicaoX(int posicaoX) {
         this.posicaoX = posicaoX;
+    }
+
+    public void setPosicaoY(int posicaoY) {
         this.posicaoY = posicaoY;
-        this.destinoX = posicaoX;
-        this.destinoY = posicaoY;
-        this.emMovimento = false;
-        this.sprite1 = new Image(getClass().getResourceAsStream("/sprites/robo-verde-1.png"));
-        this.sprite2 = new Image(getClass().getResourceAsStream("/sprites/robo-verde-2.png"));
-        this.spriteAtual = sprite1;
+    }
+
+    public void setDestinoX(int destinoX) {
+        this.destinoX = destinoX;
+    }
+
+    public void setDestinoY(int destinoY) {
+        this.destinoY = destinoY;
+    }
+
+    public Image getSprite1() {
+        return sprite1;
     }
 
     /**
@@ -86,6 +104,9 @@ public class Robo {
      */
     public int getPosicaoX() { return posicaoX; }
     public int getPosicaoY() { return posicaoY; }
-    public boolean isEmMovimento() { return emMovimento; }
+    public boolean emMovimento(){
+        return this.emMovimento;
+    }
     public Image getSpriteAtual() { return spriteAtual; }
+
 }

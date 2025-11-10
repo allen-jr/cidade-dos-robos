@@ -2,22 +2,22 @@ package model;
 import java.util.ArrayList;
 
 public class Cidade {
-    private ArrayList<Robo> robos = new ArrayList<>();
+    private RoboExplorador roboExplorador;
     private PredioCentral predioCentral;
 
     public void setPredioCentral(PredioCentral predioCentral) {
         this.predioCentral = predioCentral;
     }
 
-    public void setRobos(ArrayList<Robo> robos) {
-        this.robos = robos;
+    public void setRoboExplorador(RoboExplorador robo) {
+        this.roboExplorador = robo;
     }
 
     public PredioCentral getPredioCentral() {
         return this.predioCentral;
     }
 
-    public ArrayList<Robo> getRobos() {
-        return this.robos;
+    public RoboExplorador getRoboExplorador() {
+        return this.roboExplorador;
     }
 }

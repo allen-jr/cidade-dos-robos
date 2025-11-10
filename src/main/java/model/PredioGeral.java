@@ -7,6 +7,7 @@ import javafx.scene.image.Image;
 public class PredioGeral {
     private int posicaoX;
     private int posicaoY;
+    private int level = 1;
     private Image image;
 
     public void setPosicaoX(int posicaoX){
@@ -14,6 +15,9 @@ public class PredioGeral {
     }
     public void setPosicaoY(int posicaoY){
         this.posicaoY = posicaoY;
+    }
+    public void setLevel() {
+        this.level++;
     }
     public void setImage(Image image){
         this.image = image;
@@ -24,6 +28,9 @@ public class PredioGeral {
     }
     public int getPosicaoY() {
         return this.posicaoY;
+    }
+    public int getLevel() {
+        return level;
     }
     public Image getImage() {
         return this.image;

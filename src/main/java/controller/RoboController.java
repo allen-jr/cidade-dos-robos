@@ -67,6 +67,6 @@ public class RoboController {
     /**
      * Getters.
      */
-    public Robo getRobo() { return roboModelo; }
+    public ImageView getRoboSprite() { return sprite; }
     public ImageView getSprite() { return sprite; }
 }

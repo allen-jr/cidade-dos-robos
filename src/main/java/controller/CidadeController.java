@@ -21,11 +21,16 @@ public class CidadeController implements Initializable {
     /**Atributos da classe, tamanho das células do grid, número de linhas e colunas, gridCidade e roboController.
      */
     RoboExplorador roboExplorador;
+    PredioCentral predioCentral;
     private final int TAMANHO_CELULA = 30;
     private final int LINHAS = 780 / TAMANHO_CELULA;
     private final int COLUNAS = 1320 / TAMANHO_CELULA;
     private RoboController roboController;
     private Image blocoCidade = new Image(getClass().getResourceAsStream("/sprites/blocoDaCidade.png"));
+    private final String ESTILO_SELECIONADO = "-fx-effect: dropshadow(three-pass-box, yellow, 10, 0.5, 0, 0); -fx-border-color: yellow; -fx-border-width: 3;";
+    private final String ESTILO_NAO_SELECIONADO = "";
+    private ImageView roboEx;
+    private ImageView predioPrincipal;
 
     @FXML
     private GridPane gridCidade;
@@ -44,11 +49,21 @@ public class CidadeController implements Initializable {
         //Chama o método para carregar os status
         carregarStatus();
         //Adiciona o prédio central no gridpane
-        PredioCentral predioCentral = new PredioCentral(posicaoInicialX,posicaoInicialY);
+        predioCentral = new PredioCentral(posicaoInicialX,posicaoInicialY);
         addPredio(predioCentral.getPosicaoX(),predioCentral.getPosicaoY(),predioCentral);
         //Adiciona o robo no gridpane
         roboExplorador = new RoboExplorador(posicaoInicialX,posicaoInicialY);
         roboController = new RoboController(posicaoInicialX,posicaoInicialY,gridCidade,roboExplorador);
+        //Salva a imagem do robo
+        roboEx = roboController.getRoboSprite();
+        //Clicar no robo para direciona-lo em um local
+        roboEx.setOnMouseClicked(event -> {
+            if (roboEx != null) {
+                roboEx.setStyle(ESTILO_SELECIONADO);
+                // Se o gridCidade tiver um handler de clique, você pode querer consumi-lo
+                event.consume();
+            }
+        });
         gridCidade.setOnMouseClicked(this::clicarDestino);
 
     }
@@ -74,7 +89,6 @@ public class CidadeController implements Initializable {
         //Cria o fundo e coloca no gridpane da cidade
         Background background = new Background(backgroundTile);
         gridCidade.setBackground(background);
-
         // Configurações originais para Gaps e Restrições de Layout
         gridCidade.setHgap(0.0);
         gridCidade.setVgap(0.0);
@@ -97,6 +111,9 @@ public class CidadeController implements Initializable {
         int destinoX = (int) (event.getX() / TAMANHO_CELULA);
         int destinoY = (int) (event.getY() / TAMANHO_CELULA);
 
+        if (roboEx != null) {
+            roboEx.setStyle(ESTILO_NAO_SELECIONADO);
+        }
         roboController.definirDestino(destinoX, destinoY);
     }
 

@@ -23,6 +23,7 @@ public class Launcher extends Application {
         stage.setTitle("Cidade dos Robôs");
         stage.setScene(scene);
         stage.show();
+
         stage.setOnCloseRequest(event -> {
             Platform.exit();
             System.exit(0);

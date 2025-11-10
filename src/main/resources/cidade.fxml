@@ -9,7 +9,7 @@
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="controller.CidadeController"
             prefHeight="700.0" prefWidth="1280.0"
-            style="-fx-background-color: #1b1b1b;">
+            style="-fx-background-color: #fff;">
 
     <GridPane fx:id="gridCidade"
               prefWidth="1280.0"

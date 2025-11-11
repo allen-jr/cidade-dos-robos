@@ -1,8 +1,4 @@
 package controller;
-
-import javafx.beans.Observable;
-import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.image.Image;

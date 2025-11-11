@@ -72,21 +72,21 @@ public class Robo {
     /**
      * Método que faz o robô se mover comparando a sua posição com o seu destino. Possuí um boolean que se for igual a true, chama o método para alternar o sprite, dessa forma o sprite é alterado a cada movimento do robô. Se o robô chegar ao destino, define que o robô não está em movimento e volta para o sprite inicial.
      */
-    public void mover() {
+    public void mover(boolean[][] matrizCidade) {
         boolean moveu = false;
 
-        if (posicaoX < destinoX) {
+        if ((posicaoX < destinoX) && !matrizCidade[posicaoY][posicaoX+1]) {
             posicaoX++;
             moveu = true;
-        } else if (posicaoX > destinoX) {
+        } else if (posicaoX > destinoX && !matrizCidade[posicaoY][posicaoX-1]) {
             posicaoX--;
             moveu = true;
         }
 
-        if (posicaoY < destinoY) {
+        if (posicaoY < destinoY && !matrizCidade[posicaoY+1][posicaoX]) {
             posicaoY++;
             moveu = true;
-        } else if (posicaoY > destinoY) {
+        } else if (posicaoY > destinoY && !matrizCidade[posicaoY-1][posicaoX]) {
             posicaoY--;
             moveu = true;
         }

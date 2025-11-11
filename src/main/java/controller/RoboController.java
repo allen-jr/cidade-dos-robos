@@ -13,6 +13,7 @@ public class RoboController {
     private Robo roboModelo;
     private GridPane gridCidade;
     private ImageView sprite;
+    private boolean[][] matrizCidade;
 
     /**
      * Construtor da classe que recebe as posições iniciais do robô e o GridPane da cidade. Faz as configurações do robô, o posiciona no Grid e chama a sua animação.
@@ -20,10 +21,11 @@ public class RoboController {
      * @param posicaoInicialY
      * @param gridCidade
      */
-    public RoboController(int posicaoInicialX, int posicaoInicialY, GridPane gridCidade, Robo robo) {
+    public RoboController(int posicaoInicialX, int posicaoInicialY, GridPane gridCidade, boolean[][] matrizCidade, Robo robo) {
         this.roboModelo = robo;
         this.gridCidade = gridCidade;
         this.sprite = new ImageView(robo.getSpriteAtual());
+        this.matrizCidade = matrizCidade;
 
         sprite.setFitWidth(32);
         sprite.setFitHeight(32);
@@ -42,7 +44,7 @@ public class RoboController {
             @Override
             public void handle(long agora) {
                 if (roboModelo.emMovimento() && (agora - ultimoMovimento) >= intervaloMovimento) {
-                    roboModelo.mover();
+                    roboModelo.mover(matrizCidade);
 
                     GridPane.setColumnIndex(sprite, roboModelo.getPosicaoX());
                     GridPane.setRowIndex(sprite, roboModelo.getPosicaoY());

@@ -20,8 +20,8 @@ public class CidadeController implements Initializable {
 
     /**Atributos da classe, tamanho das células do grid, número de linhas e colunas, gridCidade e roboController.
      */
-    RoboExplorador roboExplorador;
-    PredioCentral predioCentral;
+    private RoboExplorador roboExplorador;
+    private PredioCentral predioCentral;
     private final int TAMANHO_CELULA = 30;
     private final int LINHAS = 780 / TAMANHO_CELULA;
     private final int COLUNAS = 1320 / TAMANHO_CELULA;
@@ -31,6 +31,7 @@ public class CidadeController implements Initializable {
     private final String ESTILO_NAO_SELECIONADO = "";
     private ImageView roboEx;
     private ImageView predioPrincipal;
+    private boolean[][] matrizCidade = new boolean[LINHAS][COLUNAS];
 
     @FXML
     private GridPane gridCidade;
@@ -50,10 +51,10 @@ public class CidadeController implements Initializable {
         carregarStatus();
         //Adiciona o prédio central no gridpane
         predioCentral = new PredioCentral(posicaoInicialX,posicaoInicialY);
-        addPredio(predioCentral.getPosicaoX(),predioCentral.getPosicaoY(),predioCentral);
+        addPredio(predioCentral.getPosicaoY(),predioCentral.getPosicaoX(),predioCentral);
         //Adiciona o robo no gridpane
         roboExplorador = new RoboExplorador(posicaoInicialX,posicaoInicialY);
-        roboController = new RoboController(posicaoInicialX,posicaoInicialY,gridCidade,roboExplorador);
+        roboController = new RoboController(posicaoInicialX,posicaoInicialY,gridCidade,matrizCidade,roboExplorador);
         //Salva a imagem do robo
         roboEx = roboController.getRoboSprite();
         //Clicar no robo para direciona-lo em um local
@@ -114,16 +115,23 @@ public class CidadeController implements Initializable {
         if (roboEx != null) {
             roboEx.setStyle(ESTILO_NAO_SELECIONADO);
         }
-        roboController.definirDestino(destinoX, destinoY);
+        if (!matrizCidade[destinoY][destinoX]){
+            roboController.definirDestino(destinoX, destinoY);
+        }
     }
 
-    public void addPredio(int posicaoX, int posicaoY, PredioGeral predio){
+    public void addPredio(int posicaoY, int posicaoX, PredioGeral predio){
         ImageView imagem = new ImageView(predio.getImage());
         imagem.setFitWidth(250);
         imagem.setFitHeight(250);
         imagem.setPreserveRatio(true);
         imagem.setSmooth(true);
         gridCidade.add(imagem, posicaoX, posicaoY);
+        for (int i=posicaoY-3; i<posicaoY+4; i++){
+            for (int j=posicaoX; j<posicaoX+8; j++){
+                matrizCidade[i][j] = true;
+            }
+        }
     }
 
     /**Método para carregar os status da cidade

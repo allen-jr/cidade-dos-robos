@@ -27,7 +27,7 @@ public class CidadeController implements Initializable {
     private final String ESTILO_NAO_SELECIONADO = "";
     private ImageView roboEx;
     private ImageView predioPrincipal;
-    private boolean[][] matrizCidade = new boolean[LINHAS][COLUNAS];
+    private boolean[][] matrizCidade = new boolean[LINHAS][COLUNAS]; //Matriz para evitar colisões
 
     @FXML
     private GridPane gridCidade;

@@ -49,8 +49,8 @@ public class CidadeController implements Initializable {
         predioCentral = new PredioCentral(posicaoInicialX,posicaoInicialY);
         addPredio(predioCentral.getPosicaoY(),predioCentral.getPosicaoX(),predioCentral);
         //Adiciona o robo no gridpane
-        roboExplorador = new RoboExplorador(posicaoInicialX,posicaoInicialY);
-        roboController = new RoboController(posicaoInicialX,posicaoInicialY,gridCidade,matrizCidade,roboExplorador);
+        roboExplorador = new RoboExplorador(posicaoInicialX-3,posicaoInicialY);
+        roboController = new RoboController(posicaoInicialX-3,posicaoInicialY,gridCidade,matrizCidade,roboExplorador);
         //Salva a imagem do robo
         roboEx = roboController.getRoboSprite();
         //Clicar no robo para direciona-lo em um local

@@ -1,4 +1,4 @@
-package model;
+package Model;
 import javafx.scene.image.Image;
 
 /**Classe abstrata para os prédios derivados

@@ -1,5 +1,6 @@
-package model;
+package Model;
 
+import Controller.RoboController;
 import javafx.scene.image.Image;
 
 public class RoboExplorador extends Robo{
@@ -20,6 +21,6 @@ public class RoboExplorador extends Robo{
 
     @Override
     public void acaoRobo(){
-        System.out.println("NaN");
+        super.destino(45,24);
     }
 }

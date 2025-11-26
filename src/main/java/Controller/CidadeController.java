@@ -63,7 +63,7 @@ public class CidadeController implements Initializable{
                 stackRoboEx.getChildren().getFirst().setStyle(ESTILO_SELECIONADO);
                 roboSelecionado = true;
             } else {
-                stackRoboEx.setStyle(ESTILO_NAO_SELECIONADO);
+                stackRoboEx.getChildren().getFirst().setStyle(ESTILO_NAO_SELECIONADO);
                 roboSelecionado = false;
             }
             event.consume();

@@ -7,6 +7,6 @@
 
     <GridPane fx:id="gridCidade" gridLinesVisible="false">
 
-</GridPane>
+    </GridPane>
 
-        </AnchorPane>
+</AnchorPane>

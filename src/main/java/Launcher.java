@@ -21,7 +21,6 @@ public class Launcher extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader(Launcher.class.getResource("cidade.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 1280, 700);
         stage.setTitle("ROBOTS CITY");
-        stage.setFullScreen(true);
         stage.setScene(scene);
         stage.show();
 

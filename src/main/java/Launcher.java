@@ -20,7 +20,8 @@ public class Launcher extends Application {
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(Launcher.class.getResource("cidade.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 1280, 700);
-        stage.setTitle("Cidade dos Robôs");
+        stage.setTitle("ROBOTS CITY");
+        stage.setFullScreen(true);
         stage.setScene(scene);
         stage.show();
 

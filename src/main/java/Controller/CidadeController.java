@@ -26,7 +26,7 @@ public class CidadeController implements Initializable{
     private Image blocoCidade = new Image(getClass().getResourceAsStream("/sprites/blocoDaCidade.png"));
     private final String ESTILO_SELECIONADO = "-fx-effect: dropshadow(three-pass-box, yellow, 10, 0.5, 0, 0); -fx-border-color: yellow; -fx-border-width: 3;";
     private final String ESTILO_NAO_SELECIONADO = "";
-    private ImageView imageRoboEx;
+    private StackPane stackRoboEx;
     private ImageView imagePredioCentral;
     private boolean[][] matrizCidade = new boolean[LINHAS][COLUNAS]; //Matriz para evitar colisões
     boolean roboSelecionado = false;
@@ -53,17 +53,17 @@ public class CidadeController implements Initializable{
         addPredio(predioCentral.getPosicaoY(),predioCentral.getPosicaoX(),imagePredioCentral);
         //Adiciona o robo no gridpane
         roboExplorador = new RoboExplorador(posicaoInicialX-3,posicaoInicialY);
-        //Salva a imagem do robo
-        imageRoboEx = new ImageView(roboExplorador.getSpriteAtual());
-        RoboController.addRobo(imageRoboEx,gridCidade,roboExplorador.getPosicaoY(), roboExplorador.getPosicaoX());
+        //Salva a stack do robo
+        stackRoboEx = roboExplorador.getRoboStack();
+        RoboController.addRobo(stackRoboEx,gridCidade,roboExplorador.getPosicaoY(), roboExplorador.getPosicaoX());
         //Clicar no robo para direciona-lo em um local
         // Adicione uma variável de estado na classe Cidade
-        imageRoboEx.setOnMouseClicked(event -> {
+        stackRoboEx.setOnMouseClicked(event -> {
             if (!roboSelecionado) {
-                imageRoboEx.setStyle(ESTILO_SELECIONADO);
+                stackRoboEx.getChildren().getFirst().setStyle(ESTILO_SELECIONADO);
                 roboSelecionado = true;
             } else {
-                imageRoboEx.setStyle(ESTILO_NAO_SELECIONADO);
+                stackRoboEx.setStyle(ESTILO_NAO_SELECIONADO);
                 roboSelecionado = false;
             }
             event.consume();
@@ -71,9 +71,9 @@ public class CidadeController implements Initializable{
 
         gridCidade.setOnMouseClicked(mouseEvent -> {
             if (roboSelecionado) {
-                RoboController.clicarDestino(mouseEvent, roboExplorador, imageRoboEx, matrizCidade);
-                imageRoboEx.setStyle(ESTILO_NAO_SELECIONADO);// Desseleciona após definir o destino
-                RoboController.iniciarAnimacao(roboExplorador,matrizCidade,gridCidade,imageRoboEx);
+                RoboController.clicarDestino(mouseEvent, roboExplorador, matrizCidade);
+                stackRoboEx.getChildren().getFirst().setStyle(ESTILO_NAO_SELECIONADO);// Desseleciona após definir o destino
+                RoboController.iniciarAnimacao(roboExplorador,matrizCidade,gridCidade);
                 roboSelecionado = false;
             }
             // Se roboSelecionado for false, o clique no grid não faz nada.

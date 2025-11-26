@@ -16,7 +16,7 @@ public class RoboExplorador extends Robo{
         setDestinoY(posicaoY);
         setSprite1(new Image(getClass().getResourceAsStream("/sprites/robo-verde-1.png")));
         setSprite2(new Image(getClass().getResourceAsStream("/sprites/robo-verde-2.png")));
-        setSpriteAtual(getSprite1());
+        criarStackRobo();
     }
 
     @Override

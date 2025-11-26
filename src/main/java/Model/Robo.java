@@ -1,6 +1,10 @@
 package Model;
 
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.StackPane;
 
 /**
  * Classe modelo do robô.
@@ -12,20 +16,30 @@ public class Robo {
      */
     private int posicaoX, posicaoY, destinoX, destinoY;
     private boolean emMovimento;
+    private StackPane stackRobo = new StackPane();
+    private ImageView spriteAtual;
+    private ImageView spriteBateria;
     private Image sprite1;
     private Image sprite2;
-    private Image spriteAtual;
+    private Bateria bateria = new Bateria();
 
-    public void setSprite1(Image sprite1) {
-        this.sprite1 = sprite1;
-    }
+    public void criarStackRobo() {
+        // Inicializa a ImageView do sprite
+        spriteAtual = new ImageView(sprite1);
+        spriteAtual.setFitWidth(30);
+        spriteAtual.setFitHeight(30);
 
-    public void setSprite2(Image sprite2) {
-        this.sprite2 = sprite2;
-    }
+        // Inicializa a ImageView da bateria com o sprite atual da Bateria
+        spriteBateria = bateria.getBateria();
+        spriteBateria.setFitWidth(30);
+        spriteBateria.setFitHeight(20);
 
-    public void setSpriteAtual(Image spriteAtual) {
-        this.spriteAtual = spriteAtual;
+        // Configura a posição do ícone da bateria
+        StackPane.setAlignment(spriteBateria, Pos.TOP_CENTER);
+        StackPane.setMargin(spriteBateria,new Insets(-20,0,0,0));
+
+        // Cria o StackPane e adiciona o sprite e o ícone da bateria
+        stackRobo = new StackPane(spriteAtual, spriteBateria);
     }
 
     public void setPosicaoX(int posicaoX) {
@@ -44,6 +58,14 @@ public class Robo {
         this.destinoY = destinoY;
     }
 
+    public void setSprite1(Image sprite1) {
+        this.sprite1 = sprite1;
+    }
+
+    public void setSprite2(Image sprite2) {
+        this.sprite2 = sprite2;
+    }
+
     /**Getters.
      */
     public int getPosicaoX() { return posicaoX; }
@@ -51,10 +73,8 @@ public class Robo {
     public boolean emMovimento(){
         return this.emMovimento;
     }
-    public Image getSpriteAtual() { return spriteAtual; }
-
-    public Image getSprite1() {
-        return sprite1;
+    public StackPane getRoboStack() {
+        return this.stackRobo;
     }
 
     /**
@@ -66,7 +86,7 @@ public class Robo {
         this.destinoX = destinoX;
         this.destinoY = destinoY;
         this.emMovimento = true;
-        this.spriteAtual = sprite1;
+        spriteAtual.setImage(sprite1);
     }
 
     /**
@@ -97,7 +117,9 @@ public class Robo {
 
         if (posicaoX == destinoX && posicaoY == destinoY) {
             emMovimento = false;
-            spriteAtual = sprite1;
+            spriteAtual.setImage(sprite1);
+            this.bateria.diminuir();
+            spriteBateria.setImage(bateria.getBateria().getImage());
         }
     }
 
@@ -105,7 +127,12 @@ public class Robo {
      * Método que alterna os sprites.
      */
     private void alternarSprite() {
-        spriteAtual = (spriteAtual == sprite1) ? sprite2 : sprite1;
+        Image sprite = spriteAtual.getImage();
+        if (sprite == sprite1) {
+            spriteAtual.setImage(sprite2);
+        } else {
+            spriteAtual.setImage(sprite1);
+        }
     }
 
     /**Método para executar uma ação específica do robo (o método deve ser sobrescrito nas classes derivadas)

@@ -255,7 +255,7 @@ public class CidadeController implements Initializable{
         //Cria uma stage secundária
         Stage menu = new Stage();
         menu.setTitle("MENU DE CONSTRUÇÃO");
-        menu.initModality(javafx.stage.Modality.WINDOW_MODAL);
+        menu.setResizable(false);
         //Vbox para organizar os nós do stage
         VBox VBox = new VBox(20);
         VBox.setPadding(new Insets(20));
@@ -325,7 +325,7 @@ public class CidadeController implements Initializable{
         //Cria uma stage secundária
         Stage menu = new Stage();
         menu.setTitle("MENU DE FABRICAR ROBÔ");
-        menu.initModality(javafx.stage.Modality.WINDOW_MODAL);
+        menu.setResizable(false);
         //Vbox para organizar os nós do stage
         VBox VBox = new VBox(20);
         VBox.setPadding(new Insets(20));

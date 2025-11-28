@@ -5,7 +5,7 @@
 
 <AnchorPane style="-fx-background-color: #fff;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller.CidadeController">
 
-    <GridPane fx:id="gridCidade" gridLinesVisible="false">
+    <GridPane fx:id="gridCidade" gridLinesVisible="true">
 
     </GridPane>
 

@@ -1,6 +1,4 @@
 package Model;
-
-import Controller.RoboController;
 import javafx.scene.image.Image;
 
 public class RoboExplorador extends Robo{
@@ -14,8 +12,8 @@ public class RoboExplorador extends Robo{
         setPosicaoY(posicaoY);
         setDestinoX(posicaoX);
         setDestinoY(posicaoY);
-        setSprite1(new Image(getClass().getResourceAsStream("/sprites/robo-verde-1.png")));
-        setSprite2(new Image(getClass().getResourceAsStream("/sprites/robo-verde-2.png")));
+        setSprite1(new Image(getClass().getResourceAsStream("/sprites/Robos/robo-verde-1.png")));
+        setSprite2(new Image(getClass().getResourceAsStream("/sprites/Robos/robo-verde-2.png")));
         criarStackRobo();
     }
 

@@ -2,7 +2,10 @@ package Controller;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.HPos;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.geometry.VPos;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -10,6 +13,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import Model.*;
+import javafx.scene.robot.Robot;
+import javafx.stage.Stage;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -19,17 +24,26 @@ import java.util.ResourceBundle;
 public class CidadeController implements Initializable{
     private RoboExplorador roboExplorador;
     private PredioCentral predioCentral;
+    private PredioFabrica predioFabrica = BancoDeDados.getCidade().getPredioFabrica();
+    private RoboConstrutor roboConstrutor;
+
     private final int TAMANHO_CELULA = 30;
     private final int LINHAS = 960 / TAMANHO_CELULA;
     private final int COLUNAS = 1500 / TAMANHO_CELULA;
 
-    private Image blocoCidade = new Image(getClass().getResourceAsStream("/sprites/blocoDaCidade.png"));
+    private Image blocoCidade = new Image(getClass().getResourceAsStream("/sprites/NativoCidade/blocoDaCidade.png"));
     private final String ESTILO_SELECIONADO = "-fx-effect: dropshadow(three-pass-box, yellow, 10, 0.5, 0, 0); -fx-border-color: yellow; -fx-border-width: 3;";
     private final String ESTILO_NAO_SELECIONADO = "";
+
     private StackPane stackRoboEx;
-    private ImageView imagePredioCentral;
-    private boolean[][] matrizCidade = new boolean[LINHAS][COLUNAS]; //Matriz para evitar colisões
+    private StackPane stackRoboC;
+    private StackPane stackPredioCentral;
+    private StackPane stackPredioFabrica = predioFabrica.getStackPredio();
+
+    private boolean[][] matrizCidade = new boolean[LINHAS][COLUNAS+1]; //Matriz para evitar colisões
     boolean roboSelecionado = false;
+    boolean predioSelecionado = false;
+    boolean confirmacao;
 
     @FXML
     private GridPane gridCidade;
@@ -49,12 +63,25 @@ public class CidadeController implements Initializable{
         carregarStatus();
         //Adiciona o prédio central no gridpane
         predioCentral = new PredioCentral(posicaoInicialX,posicaoInicialY);
-        imagePredioCentral = new ImageView(predioCentral.getImage());
-        addPredio(predioCentral.getPosicaoY(),predioCentral.getPosicaoX(),imagePredioCentral);
+        stackPredioCentral = predioCentral.getStackPredio();
+        addPredio(predioCentral.getPosicaoY(),predioCentral.getPosicaoX(),stackPredioCentral);
+        stackPredioCentral.setOnMouseClicked(mouseEvent -> {
+            if (!predioSelecionado) {
+                stackPredioCentral.getChildren().getFirst().setStyle(ESTILO_SELECIONADO);
+                predioSelecionado = true;
+            } else {
+                stackPredioCentral.getChildren().getFirst().setStyle(ESTILO_NAO_SELECIONADO);
+                predioSelecionado = false;
+            }
+            mouseEvent.consume();
+        });
         //Adiciona o robo no gridpane
         roboExplorador = new RoboExplorador(posicaoInicialX-3,posicaoInicialY);
+        roboConstrutor = new RoboConstrutor(1,1);
         //Salva a stack do robo
         stackRoboEx = roboExplorador.getRoboStack();
+        stackRoboC = roboConstrutor.getRoboStack();
+        roboConstrutor = new RoboConstrutor(10,23);
         RoboController.addRobo(stackRoboEx,gridCidade,roboExplorador.getPosicaoY(), roboExplorador.getPosicaoX());
         //Clicar no robo para direciona-lo em um local
         // Adicione uma variável de estado na classe Cidade
@@ -69,6 +96,20 @@ public class CidadeController implements Initializable{
             event.consume();
         });
 
+        stackPredioFabrica.setOnMouseClicked(mouseEvent -> {
+            if (!predioSelecionado && stackPredioFabrica != null) {
+                stackPredioFabrica.getChildren().getFirst().setStyle(ESTILO_SELECIONADO);
+                predioSelecionado = true;
+            } else {
+                if (stackPredioFabrica != null){
+                    stackPredioFabrica.getChildren().getFirst().setStyle(ESTILO_NAO_SELECIONADO);
+                    predioSelecionado = false;
+                }
+            }
+            exibirMenuDeRobo();
+            mouseEvent.consume();
+        });
+
         gridCidade.setOnMouseClicked(mouseEvent -> {
             if (roboSelecionado) {
                 RoboController.clicarDestino(mouseEvent, roboExplorador, matrizCidade);
@@ -80,7 +121,7 @@ public class CidadeController implements Initializable{
         });
 
         //imagem do botão para construir
-        ImageView imageBotao = new ImageView(new Image(getClass().getResourceAsStream("/sprites/botaoConstruir.png")));
+        ImageView imageBotao = new ImageView(new Image(getClass().getResourceAsStream("/sprites/NativoCidade/botaoConstruir.png")));
         imageBotao.setFitWidth(150);
         imageBotao.setFitHeight(150);
         imageBotao.setPreserveRatio(true);
@@ -93,6 +134,10 @@ public class CidadeController implements Initializable{
 
         botaoContruir.setGraphic(imageBotao);
         gridCidade.add(botaoContruir,47,24);
+
+        botaoContruir.setOnAction(event -> {
+            exibirMenuConstruir();
+        });
 
     }
 
@@ -141,13 +186,8 @@ public class CidadeController implements Initializable{
         }
     }
 
-    public void addPredio(int posicaoY, int posicaoX, ImageView ImagePredio){
-
-        ImagePredio.setFitWidth(250);
-        ImagePredio.setFitHeight(250);
-        ImagePredio.setPreserveRatio(true);
-        ImagePredio.setSmooth(true);
-        gridCidade.add(ImagePredio, posicaoX, posicaoY);
+    public void addPredio(int posicaoY, int posicaoX, StackPane stackPredio){
+        gridCidade.add(stackPredio, posicaoX, posicaoY);
         for (int i=posicaoY-3; i<posicaoY+4; i++){
             for (int j=posicaoX; j<posicaoX+8; j++){
                 matrizCidade[i][j] = true;
@@ -160,7 +200,7 @@ public class CidadeController implements Initializable{
     public void carregarStatus(){
 
         //Exibição da barra de recursos
-        ImageView image2 = new ImageView(new Image(getClass().getResourceAsStream("/sprites/barraDeRecursos.png")));
+        ImageView image2 = new ImageView(new Image(getClass().getResourceAsStream("/sprites/NativoCidade/barraDeRecursos.png")));
         image2.setFitWidth(190);
         image2.setFitHeight(190);
         image2.setPreserveRatio(true);
@@ -170,7 +210,7 @@ public class CidadeController implements Initializable{
         nRecursos.setStyle("-fx-font-size: 15pt; -fx-font-weight: bold; -fx-text-fill: black;");
 
         //Exibição da barra de baterias
-        ImageView image3 = new ImageView(new Image(getClass().getResourceAsStream("/sprites/barraDeBaterias.png")));
+        ImageView image3 = new ImageView(new Image(getClass().getResourceAsStream("/sprites/NativoCidade/barraDeBaterias.png")));
         image3.setFitWidth(120);
         image3.setFitHeight(120);
         image3.setPreserveRatio(true);
@@ -182,7 +222,7 @@ public class CidadeController implements Initializable{
         //imagem da arvore
         ImageView image5;
         for (int i=0; i<LINHAS; i=i+3){
-            image5 = new ImageView(new Image(getClass().getResourceAsStream("/sprites/arvore.png")));
+            image5 = new ImageView(new Image(getClass().getResourceAsStream("/sprites/NativoCidade/arvore.png")));
             image5.setFitWidth(200);
             image5.setFitHeight(200);
             image5.setPreserveRatio(true);
@@ -194,4 +234,204 @@ public class CidadeController implements Initializable{
         gridCidade.add(nRecursos,44,1);
         gridCidade.add(nBaterias,48,1);
     }
+
+    public void exibirMenuConstruir(){
+        //Cria uma stage secundária
+        Stage menu = new Stage();
+        menu.setTitle("MENU DE CONSTRUÇÃO");
+        menu.initModality(javafx.stage.Modality.WINDOW_MODAL);
+        //Vbox para organizar os nós do stage
+        VBox VBox = new VBox(20);
+        VBox.setPadding(new Insets(20));
+        VBox.setAlignment(Pos.TOP_CENTER);
+        //Label para fornecer informações
+        Label label1 = new Label("ESCOLHA UM PRÉDIO PARA CONSTRUIR:");
+        label1.setStyle("-fx-font-size: 16pt; -fx-font-weight: bold; -fx-text-fill: Black;");
+        Label label2 = new Label("(CLIQUE NO PRÉDIO PARA CONSTRUIR)");
+        label2.setStyle("-fx-font-size: 16pt; -fx-font-weight: bold; -fx-text-fill: Black;");
+        //Hbox para organizar os StackPane de construção
+        HBox hboxMeio = new HBox(50);
+        hboxMeio.setAlignment(Pos.CENTER);
+        //Coloca o StackPane da fábrica de robôs
+        StackPane stackPaneFabrica = criarStackPane(
+                new Image(getClass().getResourceAsStream("/sprites/Predios/FabricaDeRobos.png")),
+                new Image(getClass().getResourceAsStream("/sprites/Valores/valor_0.png"))
+        );
+        //verifica se ja colocou no mapa
+        if (!predioFabrica.getConstruido()) {
+            hboxMeio.getChildren().add(stackPaneFabrica);
+        }
+        // 4. CONTEÚDO DO FUNDO: O Botão Fechar
+        Button closeButton = new Button("Fechar");
+        closeButton.setOnAction(e -> menu.close());
+        //Adiciona tudo ao Vbox
+        VBox.getChildren().addAll(
+                label1,
+                label2,
+                hboxMeio,
+                closeButton
+        );
+        //Define o scene para o stage
+        Scene cena = new Scene(VBox, 700, 500);
+        menu.setScene(cena);
+        //evento para construir a fabrica caso clique nela
+        stackPaneFabrica.setOnMouseClicked( mouseEvent -> {
+            if (confirmar()){
+                construirPredio(hboxMeio,stackPaneFabrica,predioFabrica);
+                menu.close();
+            }
+        });
+        //sáida da stage
+        menu.showAndWait();
+    }
+
+    public StackPane criarStackPane(Image imagemPredio, Image imagemValor){
+        ImageView image1 = new ImageView(imagemPredio);
+        image1.setFitWidth(150);
+        image1.setFitHeight(150);
+        image1.setPreserveRatio(true);
+        image1.setSmooth(true);
+
+        ImageView image2 = new ImageView(imagemValor);
+        image2.setFitWidth(60);
+        image2.setFitHeight(60);
+        image2.setPreserveRatio(true);
+        image2.setSmooth(true);
+
+        StackPane stackPane = new StackPane();
+        stackPane.setAlignment(Pos.TOP_CENTER);
+        stackPane.getChildren().addAll(image1,image2);
+        StackPane.setMargin(image2, new Insets(+150,0,0,0));
+        return stackPane;
+    }
+
+    public void exibirMenuDeRobo(){
+        //Cria uma stage secundária
+        Stage menu = new Stage();
+        menu.setTitle("MENU DE FABRICAR ROBÔ");
+        menu.initModality(javafx.stage.Modality.WINDOW_MODAL);
+        //Vbox para organizar os nós do stage
+        VBox VBox = new VBox(20);
+        VBox.setPadding(new Insets(20));
+        VBox.setAlignment(Pos.TOP_CENTER);
+        //Label para fornecer informações
+        Label label1 = new Label("ESCOLHA UM ROBÔ PARA FABRICAR:");
+        label1.setStyle("-fx-font-size: 16pt; -fx-font-weight: bold; -fx-text-fill: Black;");
+        Label label2 = new Label("(CLIQUE NO ROBÔ PARA FABRICAR)");
+        label2.setStyle("-fx-font-size: 16pt; -fx-font-weight: bold; -fx-text-fill: Black;");
+        //Hbox para organizar os StackPane de construção
+        HBox hboxMeio = new HBox(50);
+        hboxMeio.setAlignment(Pos.CENTER);
+        //Coloca o StackPane da fábrica de robôs
+        StackPane stackPaneRobo = criarStackPane(
+                new Image(getClass().getResourceAsStream("/sprites/Robos/robo-construtor-1.png")),
+                new Image(getClass().getResourceAsStream("/sprites/Valores/valor_0.png"))
+        );
+        //verifica se ja colocou no mapa
+        if (!roboConstrutor.isFabricado()) {
+            hboxMeio.getChildren().add(stackPaneRobo);
+        }
+        // 4. CONTEÚDO DO FUNDO: O Botão Fechar
+        Button closeButton = new Button("Fechar");
+        closeButton.setOnAction(e -> menu.close());
+        //Adiciona tudo ao Vbox
+        VBox.getChildren().addAll(
+                label1,
+                label2,
+                hboxMeio,
+                closeButton
+        );
+        //Define o scene para o stage
+        Scene cena = new Scene(VBox, 700, 500);
+        menu.setScene(cena);
+        //evento para construir a fabrica caso clique nela
+        stackPaneRobo.setOnMouseClicked( mouseEvent -> {
+           if (confirmar()){
+               fabricarRobo(hboxMeio,roboConstrutor,stackPaneRobo);
+               menu.close();
+           }
+        });
+        //sáida da stage
+        menu.showAndWait();
+        stackPredioFabrica.setStyle(ESTILO_NAO_SELECIONADO);
+    }
+
+    public void fabricarRobo(HBox hbox, Robo robo,StackPane stackPaneRobo){
+        if (BancoDeDados.getCidade().getRecursos() >= 0 ){
+            gridCidade.add(stackRoboC,21,16);
+            hbox.getChildren().remove(stackPaneRobo);
+            roboConstrutor.setFabricado();
+        } else {
+            exibirMensagem();
+        }
+    }
+
+    public void construirPredio(HBox hbox, StackPane stackPredio, PredioGeral predio) {
+        if (BancoDeDados.getCidade().getRecursos() >= 0 ){
+            addPredio(7,10,predio.getStackPredio());
+            hbox.getChildren().remove(stackPredio);
+            predioFabrica.setConstruido();
+        } else {
+            exibirMensagem();
+        }
+    }
+
+    public void exibirMensagem(){
+        //
+        Stage alertaStage = new Stage();
+        alertaStage.setTitle("Alerta de Recursos");
+        //
+        VBox rootVBox = new VBox(15);
+        rootVBox.setPadding(new Insets(20));
+        rootVBox.setAlignment(Pos.CENTER);
+        // Label com a mensagem de erro
+        Label mensagemLabel = new Label("Você não tem recursos suficientes");
+        mensagemLabel.setStyle("-fx-font-size: 14pt; -fx-font-weight: bold; -fx-text-fill: red;");
+        //
+        Button okButton = new Button("OK");
+        okButton.setOnAction(e -> alertaStage.close());
+        // Adiciona os componentes ao VBox
+        rootVBox.getChildren().addAll(mensagemLabel, okButton);
+        //
+        Scene cena = new Scene(rootVBox, 350, 150);
+        alertaStage.setScene(cena);
+
+        //
+        alertaStage.showAndWait();
+    }
+
+    public boolean confirmar(){
+        Stage confirmar = new Stage();
+        confirmar.setTitle("Confirmar");
+        confirmar.setResizable(false);
+        confirmacao = false;
+
+        VBox raizVBox = new VBox(15);
+        raizVBox.setAlignment(Pos.CENTER);
+        raizVBox.setPadding(new Insets(20));
+
+        Label mensagemLabel = new Label("Você realmente deseja fazer isso?");
+        mensagemLabel.setStyle("-fx-font-size: 14pt; -fx-font-weight: bold; -fx-text-fill: black;");
+
+        HBox escolha = new HBox(10);
+        escolha.setAlignment(Pos.CENTER);
+
+        Button sim =  new Button("Confirmar");
+        sim.setOnAction(e -> {
+            confirmacao = true;
+            confirmar.close();
+        });
+         Button nao = new Button("Cancelar");
+         nao.setOnAction(e -> {
+             confirmacao = false;
+             confirmar.close();
+         });
+
+         escolha.getChildren().addAll(sim, nao);
+         raizVBox.getChildren().addAll(mensagemLabel,escolha);
+         confirmar.setScene(new Scene(raizVBox, 350, 150));
+         confirmar.showAndWait();
+         return  confirmacao;
+    }
+
 }

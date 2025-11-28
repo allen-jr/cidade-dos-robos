@@ -22,6 +22,7 @@ public class Robo {
     private Image sprite1;
     private Image sprite2;
     private Bateria bateria = new Bateria();
+    private boolean fabricado;
 
     public void criarStackRobo() {
         // Inicializa a ImageView do sprite
@@ -66,6 +67,10 @@ public class Robo {
         this.sprite2 = sprite2;
     }
 
+    public void setFabricado() {
+        this.fabricado = true;
+    }
+
     /**Getters.
      */
     public int getPosicaoX() { return posicaoX; }
@@ -75,6 +80,10 @@ public class Robo {
     }
     public StackPane getRoboStack() {
         return this.stackRobo;
+    }
+
+    public boolean isFabricado() {
+        return this.fabricado;
     }
 
     /**

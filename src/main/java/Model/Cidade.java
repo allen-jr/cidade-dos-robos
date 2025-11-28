@@ -1,21 +1,9 @@
 package Model;
 
-import Controller.RoboController;
-import javafx.event.EventHandler;
-import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.*;
-
-import java.net.URL;
-import java.util.ResourceBundle;
-
 public class Cidade {
     private RoboExplorador roboExplorador;
     private PredioCentral predioCentral;
+    private PredioFabrica predioFabrica = new PredioFabrica(7,10);
     private double recursos = 0.0;
     private int baterias;
 
@@ -45,6 +33,10 @@ public class Cidade {
 
     public int getBaterias() {
         return baterias;
+    }
+
+    public PredioFabrica getPredioFabrica() {
+        return  this.predioFabrica;
     }
 
     public void setBaterias(int baterias) {

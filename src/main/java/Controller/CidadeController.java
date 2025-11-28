@@ -41,7 +41,8 @@ public class CidadeController implements Initializable{
     private StackPane stackPredioFabrica = predioFabrica.getStackPredio();
 
     private boolean[][] matrizCidade = new boolean[LINHAS][COLUNAS+1]; //Matriz para evitar colisões
-    boolean roboSelecionado = false;
+    boolean roboSelecionado1 = false;
+    boolean roboSelecionado2 = false;
     boolean predioSelecionado = false;
     boolean confirmacao;
 
@@ -86,12 +87,23 @@ public class CidadeController implements Initializable{
         //Clicar no robo para direciona-lo em um local
         // Adicione uma variável de estado na classe Cidade
         stackRoboEx.setOnMouseClicked(event -> {
-            if (!roboSelecionado) {
+            if (!roboSelecionado1) {
                 stackRoboEx.getChildren().getFirst().setStyle(ESTILO_SELECIONADO);
-                roboSelecionado = true;
+                roboSelecionado1 = true;
             } else {
                 stackRoboEx.getChildren().getFirst().setStyle(ESTILO_NAO_SELECIONADO);
-                roboSelecionado = false;
+                roboSelecionado1 = false;
+            }
+            event.consume();
+        });
+
+        stackRoboC.setOnMouseClicked(event -> {
+            if (!roboSelecionado2) {
+                stackRoboC.getChildren().getFirst().setStyle(ESTILO_SELECIONADO);
+                roboSelecionado2 = true;
+            } else {
+                stackRoboC.getChildren().getFirst().setStyle(ESTILO_NAO_SELECIONADO);
+                roboSelecionado2 = false;
             }
             event.consume();
         });
@@ -111,13 +123,17 @@ public class CidadeController implements Initializable{
         });
 
         gridCidade.setOnMouseClicked(mouseEvent -> {
-            if (roboSelecionado) {
+            if (roboSelecionado1) {
                 RoboController.clicarDestino(mouseEvent, roboExplorador, matrizCidade);
-                stackRoboEx.getChildren().getFirst().setStyle(ESTILO_NAO_SELECIONADO);// Desseleciona após definir o destino
+                stackRoboEx.getChildren().getFirst().setStyle(ESTILO_NAO_SELECIONADO);
                 RoboController.iniciarAnimacao(roboExplorador,matrizCidade,gridCidade);
-                roboSelecionado = false;
+                roboSelecionado1 = false;
+            } else if (roboSelecionado2){
+                RoboController.clicarDestino(mouseEvent, roboConstrutor, matrizCidade);
+                stackRoboC.getChildren().getFirst().setStyle(ESTILO_NAO_SELECIONADO);
+                RoboController.iniciarAnimacao(roboConstrutor,matrizCidade,gridCidade);
+                roboSelecionado2 = false;
             }
-            // Se roboSelecionado for false, o clique no grid não faz nada.
         });
 
         //imagem do botão para construir
@@ -353,7 +369,7 @@ public class CidadeController implements Initializable{
         });
         //sáida da stage
         menu.showAndWait();
-        stackPredioFabrica.setStyle(ESTILO_NAO_SELECIONADO);
+        stackPredioFabrica.getChildren().getFirst().setStyle(ESTILO_NAO_SELECIONADO);
     }
 
     public void fabricarRobo(HBox hbox, Robo robo,StackPane stackPaneRobo){

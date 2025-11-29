@@ -9,6 +9,7 @@ public class RoboConstrutor extends Robo{
         setPosicaoY(posicaoY);
         setDestinoX(posicaoX);
         setDestinoY(posicaoY);
+        setNome("Construtor");
         setSprite1(new Image(getClass().getResourceAsStream("/sprites/Robos/robo-construtor-1.png")));
         setSprite2(new Image(getClass().getResourceAsStream("/sprites/Robos/robo-construtor-2.png")));
         criarStackRobo();

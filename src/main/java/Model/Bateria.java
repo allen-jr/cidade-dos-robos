@@ -19,6 +19,10 @@ public class Bateria {
         }
     }
 
+    public int getPorcentagem() {
+        return this.porcentagem;
+    }
+
     public ImageView getBateria() {
         if (porcentagem >= 51) {
             return this.carregada;

@@ -2,6 +2,7 @@ package Model;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
@@ -16,6 +17,7 @@ public class Robo {
      */
     private int posicaoX, posicaoY, destinoX, destinoY;
     private boolean emMovimento;
+    private String nome;
     private StackPane stackRobo = new StackPane();
     private ImageView spriteAtual;
     private ImageView spriteBateria;
@@ -71,6 +73,10 @@ public class Robo {
         this.fabricado = true;
     }
 
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
     /**Getters.
      */
     public int getPosicaoX() { return posicaoX; }
@@ -80,6 +86,18 @@ public class Robo {
     }
     public StackPane getRoboStack() {
         return this.stackRobo;
+    }
+
+    public String getNome() {
+        return this.nome;
+    }
+
+    public ImageView getImagemBateria() {
+        return this.bateria.getBateria();
+    }
+
+    public int getPorcentoBateria() {
+        return this.bateria.getPorcentagem();
     }
 
     public boolean isFabricado() {
@@ -148,5 +166,9 @@ public class Robo {
      */
     public void acaoRobo(){
         System.out.println("sem ação");
+    }
+
+    public void recarregarBateria(){
+        this.bateria.recarregar();
     }
 }

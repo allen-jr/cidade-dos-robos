@@ -1,5 +1,4 @@
 import Model.BancoDeDados;
-import Model.Persistencia;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;

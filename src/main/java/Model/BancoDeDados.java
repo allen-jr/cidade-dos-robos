@@ -9,18 +9,16 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Type;
 
+/**Classe responsável por armazenar, salvar e recuperar os dados da cidade
+ */
 public class BancoDeDados {
     private static Cidade cidade = new Cidade();
 
     public static Cidade getCidade() {
         return cidade;
     }
-    /** Salva todo o estado da cidade no arquivo JSON */
+    /** Salva todo o estado da cidade em arquivo Gson */
     public static void salvar() {
-        cidade.getPredios().add(cidade.getPredioBateria());
-        cidade.getPredios().add(cidade.getPredioFabrica());
-        cidade.getRobos().add(cidade.getRoboConstrutor());
-        cidade.getRobos().add(cidade.getRoboEngenheiro());
         Gson gson = new Gson();
         try (FileWriter writer = new FileWriter("cidade.json")) {
             gson.toJson(cidade, writer);
@@ -44,24 +42,29 @@ public class BancoDeDados {
         }
     }
 
+    /**Método para reconstruir as imagens e os stackpanes dos robôs e dos prédios
+     */
     public static void reconstruirDados(){
+        //recupera as imagens dos prédios
         cidade.getPredioCentral().setImage(new ImageView(new Image(BancoDeDados.class.getResourceAsStream("/sprites/Predios/predioPrincipal.png"))));
         cidade.getPredioBateria().setImage(new ImageView(new Image(BancoDeDados.class.getResourceAsStream("/sprites/Predios/FabricaDeBateria.png"))));
         cidade.getPredioFabrica().setImage(new ImageView(new Image(BancoDeDados.class.getResourceAsStream("/sprites/Predios/FabricaDeRobos.png"))));
+        //recupera as imagens dos robôs
         cidade.getRoboExplorador().setSprite1(new Image(BancoDeDados.class.getResourceAsStream("/sprites/Robos/robo-verde-1.png")));
         cidade.getRoboExplorador().setSprite2(new Image(BancoDeDados.class.getResourceAsStream("/sprites/Robos/robo-verde-2.png")));
         cidade.getRoboEngenheiro().setSprite1(new Image(BancoDeDados.class.getResourceAsStream("/sprites/Robos/robo-azul-1.png")));
         cidade.getRoboEngenheiro().setSprite2(new Image(BancoDeDados.class.getResourceAsStream("/sprites/Robos/robo-azul-2.png")));
         cidade.getRoboConstrutor().setSprite1(new Image(BancoDeDados.class.getResourceAsStream("/sprites/Robos/robo-construtor-1.png")));
         cidade.getRoboConstrutor().setSprite2(new Image(BancoDeDados.class.getResourceAsStream("/sprites/Robos/robo-construtor-2.png")));
-
+        //recupera as imagens das baterias dos robôs
         cidade.getRoboExplorador().getBateria().recuperarImagem();
         cidade.getRoboConstrutor().getBateria().recuperarImagem();
         cidade.getRoboEngenheiro().getBateria().recuperarImagem();
-
+        //cria os stackpanes dos robôs
         cidade.getRoboExplorador().criarStackRobo();
         cidade.getRoboConstrutor().criarStackRobo();
         cidade.getRoboEngenheiro().criarStackRobo();
+        //cria os stackpanes dos prédios
         cidade.getPredioCentral().contruirStackPredio();
         cidade.getPredioBateria().contruirStackPredio();
         cidade.getPredioFabrica().contruirStackPredio();

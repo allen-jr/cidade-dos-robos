@@ -21,8 +21,8 @@ import java.util.ResourceBundle;
 public class CidadeController implements Initializable {
     //Prédios
     private PredioCentral predioCentral = BancoDeDados.getCidade().getPredioCentral();
-    private PredioFabrica predioFabrica = BancoDeDados.getCidade().getPredioFabrica();
-    private PredioBateria predioBateria = BancoDeDados.getCidade().getPredioBateria();
+    private FabricaRobo fabricaRobo = BancoDeDados.getCidade().getPredioFabrica();
+    private FabricaBateria fabricaBateria = BancoDeDados.getCidade().getPredioBateria();
     //Robôs
     private RoboConstrutor roboConstrutor =  BancoDeDados.getCidade().getRoboConstrutor();
     private RoboExplorador roboExplorador = BancoDeDados.getCidade().getRoboExplorador();
@@ -42,8 +42,8 @@ public class CidadeController implements Initializable {
     private StackPane stackRoboEng = roboEngenheiro.getRoboStack();
     //StackPane dos Prédios
     private StackPane stackPredioCentral = predioCentral.getStackPredio();
-    private StackPane stackPredioFabrica = predioFabrica.getStackPredio();
-    private StackPane stackPredioBateria = predioBateria.getStackPredio();
+    private StackPane stackFabricaRobo = fabricaRobo.getStackPredio();
+    private StackPane stackFabricaBateria = fabricaBateria.getStackPredio();
     //Matriz para tratar colisão
     private boolean[][] matrizCidade = new boolean[LINHAS][COLUNAS + 1];
     //variáveis booleanas para a movimentação dos robôs
@@ -78,6 +78,7 @@ public class CidadeController implements Initializable {
         carregarStatus();
         //Reconstrói os prédios e refabrica os robôs do ultimo save
         reconstruir();
+        atualizarRecursos();
         //Adiciona o prédio central no gridpane
         if (predioCentral != null) {
             stackPredioCentral = predioCentral.getStackPredio();
@@ -147,15 +148,15 @@ public class CidadeController implements Initializable {
             event.consume();
         });
         //evento de clique na fabrica de robos
-        stackPredioFabrica.setOnMouseClicked(mouseEvent -> {
-            if (!predioSelecionado && stackPredioFabrica != null) {
+        stackFabricaRobo.setOnMouseClicked(mouseEvent -> {
+            if (!predioSelecionado && stackFabricaRobo != null) {
                 //coloca estilo de seleção
-                stackPredioFabrica.getChildren().getFirst().setStyle(ESTILO_SELECIONADO);
+                stackFabricaRobo.getChildren().getFirst().setStyle(ESTILO_SELECIONADO);
                 predioSelecionado = true;
             } else {
-                if (stackPredioFabrica != null) {
+                if (stackFabricaRobo != null) {
                     //remove o estilo de seleção
-                    stackPredioFabrica.getChildren().getFirst().setStyle(ESTILO_NAO_SELECIONADO);
+                    stackFabricaRobo.getChildren().getFirst().setStyle(ESTILO_NAO_SELECIONADO);
                     predioSelecionado = false;
                 }
             }
@@ -340,7 +341,7 @@ public class CidadeController implements Initializable {
                 new Image(getClass().getResourceAsStream("/sprites/Valores/valor_0.png"))
         );
         //verifica se ja colocou no mapa
-        if (!predioFabrica.getConstruido()) {
+        if (!fabricaRobo.getConstruido()) {
             hboxMeio.getChildren().add(stackPaneFabrica);
         }
         //Coloca o StackPane da fábrica de baterias
@@ -349,7 +350,7 @@ public class CidadeController implements Initializable {
                 new Image(getClass().getResourceAsStream("/sprites/Valores/valor_100.png"))
         );
         //verifica se ja colocou no mapa
-        if (!predioBateria.getConstruido()) {
+        if (!fabricaBateria.getConstruido()) {
             hboxMeio.getChildren().add(stackPaneFabricaBateria);
         }
 
@@ -367,18 +368,18 @@ public class CidadeController implements Initializable {
         Scene cena = new Scene(VBox, 700, 500);
         //adiciona o scene ao stage
         menu.setScene(cena);
-        //evento para construir a fabrica, caso clique nela
+        //evento para construir a fabrica de robôs, caso clique nela
         stackPaneFabrica.setOnMouseClicked(mouseEvent -> {
             //verifica se a cidade tem recurso suficiente para construir
             if (BancoDeDados.getCidade().getRecursos() >= 0) {
                 //exibe um popup de confirmação de construção
                 if (confirmar()) {
                     //adiciona o stackpane do prédio na cidade
-                    addPredio(predioFabrica.getPosicaoY(), predioFabrica.getPosicaoX(), predioFabrica.getStackPredio());
+                    addPredio(fabricaRobo.getPosicaoY(), fabricaRobo.getPosicaoX(), fabricaRobo.getStackPredio());
                     //remove o prédio do menu de construção
                     hboxMeio.getChildren().remove(stackPaneFabrica);
                     //coloca o prédio como construído
-                    predioFabrica.setConstruido();
+                    fabricaRobo.setConstruido();
                 }
             } else {
                 exibirMensagem();
@@ -387,7 +388,7 @@ public class CidadeController implements Initializable {
         });
         //evento para construir a fabrica de bateria caso clique nela
         stackPaneFabricaBateria.setOnMouseClicked(mouseEvent -> {
-            construirPredio(hboxMeio, stackPaneFabricaBateria, predioBateria, 100);
+            construirPredio(hboxMeio, stackPaneFabricaBateria, fabricaBateria, 100);
             menu.close();
         });
         //sáida da stage
@@ -487,7 +488,7 @@ public class CidadeController implements Initializable {
         //sáida da stage
         menu.showAndWait();
         //remove o estilo do prédio de fabricar robôs
-        stackPredioFabrica.getChildren().getFirst().setStyle(ESTILO_NAO_SELECIONADO);
+        stackFabricaRobo.getChildren().getFirst().setStyle(ESTILO_NAO_SELECIONADO);
     }
 
     /**Método para fabricar o robô e colocar na cidade
@@ -596,7 +597,7 @@ public class CidadeController implements Initializable {
         okButton.setOnAction(e -> alertaStage.close());
         // Adiciona os componentes ao VBox
         rootVBox.getChildren().addAll(mensagemLabel,mensagemLabel2);
-        if (!predioFabrica.getConstruido()){
+        if (!fabricaRobo.getConstruido()){
             rootVBox.getChildren().add(mensagemLabel3);
         }
         rootVBox.getChildren().add(okButton);
@@ -669,11 +670,11 @@ public class CidadeController implements Initializable {
     /**Método para recuperar o ùltimo save, reconstrói os prédios e refabrica os robôs
      */
     public void reconstruir(){
-        if (predioFabrica.getConstruido()){
-            addPredio(predioFabrica.getPosicaoY(), predioFabrica.getPosicaoX(),predioFabrica.getStackPredio());
+        if (fabricaRobo.getConstruido()){
+            addPredio(fabricaRobo.getPosicaoY(), fabricaRobo.getPosicaoX(), fabricaRobo.getStackPredio());
         }
-        if (predioBateria.getConstruido()){
-            addPredio(predioBateria.getPosicaoY(), predioBateria.getPosicaoX(),predioBateria.getStackPredio());
+        if (fabricaBateria.getConstruido()){
+            addPredio(fabricaBateria.getPosicaoY(), fabricaBateria.getPosicaoX(), fabricaBateria.getStackPredio());
         }
         if (roboConstrutor.isFabricado()){
             RoboController.addRobo(roboConstrutor.getRoboStack(),gridCidade,roboConstrutor.getPosicaoY(),roboConstrutor.getPosicaoX());

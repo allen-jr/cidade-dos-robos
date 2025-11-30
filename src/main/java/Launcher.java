@@ -1,3 +1,5 @@
+import Model.BancoDeDados;
+import Model.Persistencia;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -18,6 +20,7 @@ public class Launcher extends Application {
      */
     @Override
     public void start(Stage stage) throws IOException {
+        BancoDeDados.carregar();
         FXMLLoader fxmlLoader = new FXMLLoader(Launcher.class.getResource("cidade.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 1280, 700);
         stage.setTitle("ROBOTS CITY");
@@ -25,6 +28,7 @@ public class Launcher extends Application {
         stage.show();
 
         stage.setOnCloseRequest(event -> {
+            BancoDeDados.salvar();
             Platform.exit();
             System.exit(0);
         });

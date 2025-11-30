@@ -129,7 +129,6 @@ public class RoboController {
         StackPane.setMargin(mover, new Insets(0, 0, 0, +120));
         StackPane.setMargin(botaoAcao, new Insets(0, 0, 0, +200));
         stackRosto.getChildren().addAll(imageRosto,mover, botaoAcao);
-
         recarregar.setOnAction( actionEvent -> {
             if (BancoDeDados.getCidade().getBaterias() >= 0){
                 robo.recarregarBateria();
@@ -158,12 +157,6 @@ public class RoboController {
         //cria um novo stage
         Stage alertaStage = new Stage();
         alertaStage.setTitle("Alerta de Bateria");
-        // Obtém a referência do Stage principal
-        Stage stagePrincipal = (Stage) gridCidade.getScene().getWindow();
-        // Define o Stage principal como Owner (dono)
-        alertaStage.initOwner(stagePrincipal);
-        // Define a modalidade como WINDOW_MODAL, serve para evitar que receba cliques na cidade
-        alertaStage.initModality(Modality.WINDOW_MODAL);
         //cria um vbox para organizar os nodes certinho
         VBox rootVBox = new VBox(15);
         rootVBox.setPadding(new Insets(20));

@@ -1,19 +1,15 @@
 package Controller;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.geometry.VPos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import Model.*;
-import javafx.scene.robot.Robot;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -58,6 +54,13 @@ public class CidadeController implements Initializable {
     private boolean predioSelecionado = false;
     //Variavél booleana para confirmar a construção de prédioa e fabricação de robôs
     private boolean confirmacao;
+    //utilização de um label para mostrar a quantidade de recursos
+    Label nRecursos = new Label(String.valueOf(BancoDeDados.getCidade().getRecursos()));
+    //utilização de um label para mostrar a quantidade de baterias
+    Label nBaterias = new Label(String.valueOf(BancoDeDados.getCidade().getBaterias()));
+    //
+    StackPane stackNRecurso = new StackPane();
+    StackPane stackNBateria = new StackPane();
 
     @FXML
     private GridPane gridCidade;
@@ -73,6 +76,8 @@ public class CidadeController implements Initializable {
         configurarGrid();
         //Chama o método para carregar os status
         carregarStatus();
+        //Reconstrói os prédios e refabrica os robôs do ultimo save
+        reconstruir();
         //Adiciona o prédio central no gridpane
         if (predioCentral != null) {
             stackPredioCentral = predioCentral.getStackPredio();
@@ -189,7 +194,6 @@ public class CidadeController implements Initializable {
                 roboSelecionado3 = false;
             }
         });
-
         //imagem do botão para construir
         ImageView imageBotao = new ImageView(new Image(getClass().getResourceAsStream("/sprites/NativoCidade/botaoConstruir.png")));
         imageBotao.setFitWidth(150);
@@ -210,6 +214,28 @@ public class CidadeController implements Initializable {
             //exibe uma stage para construir prédios
             exibirMenuConstruir();
         });
+        nRecursos.setStyle("-fx-font-size: 15pt; -fx-font-weight: bold; -fx-text-fill: black;");
+        nBaterias.setStyle("-fx-font-size: 15pt; -fx-font-weight: bold; -fx-text-fill: black;");
+        atualizarRecursos();
+        //Imagem da barra de recursos
+        ImageView image2 = new ImageView(new Image(getClass().getResourceAsStream("/sprites/NativoCidade/barraDeRecursos.png")));
+        image2.setFitWidth(190);
+        image2.setFitHeight(190);
+        image2.setPreserveRatio(true);
+        image2.setSmooth(true);
+        //Imagem da barra de baterias
+        ImageView image3 = new ImageView(new Image(getClass().getResourceAsStream("/sprites/NativoCidade/barraDeBaterias.png")));
+        image3.setFitWidth(120);
+        image3.setFitHeight(120);
+        image3.setPreserveRatio(true);
+        image3.setSmooth(true);
+        //Adiciona a barra de recursos e a barra de baterias
+        stackNRecurso.setAlignment(Pos.CENTER);
+        stackNRecurso.getChildren().addAll(image2,nRecursos);
+        gridCidade.add(stackNRecurso, 39, 1);
+        stackNBateria.setAlignment(Pos.CENTER);
+        stackNBateria.getChildren().addAll(image3,nBaterias);
+        gridCidade.add(stackNBateria, 46, 1);
     }
 
     /**Método que configura as linhas e colunas do gridCidade.
@@ -246,12 +272,6 @@ public class CidadeController implements Initializable {
                 matrizCidade[i][j] = true;
             }
         }
-        /*
-        for (int i = 0; i < 2; i++) {
-            for (int j = 39; j < COLUNAS; j++) {
-                matrizCidade[i][j] = true;
-            }
-        }*/
     }
 
     /**Método para adicionar um prédio na cidade
@@ -270,29 +290,16 @@ public class CidadeController implements Initializable {
         }
     }
 
+    /** Atualiza na interface o número de recursos */
+    public void atualizarRecursos() {
+        nRecursos.setText(String.valueOf(BancoDeDados.getCidade().getRecursos()));
+        nBaterias.setText(String.valueOf(BancoDeDados.getCidade().getBaterias()));
+    }
+
+
     /**Método para carregar os status da cidade e as árvores da cidade
      */
     public void carregarStatus() {
-        //Imagem da barra de recursos
-        ImageView image2 = new ImageView(new Image(getClass().getResourceAsStream("/sprites/NativoCidade/barraDeRecursos.png")));
-        image2.setFitWidth(190);
-        image2.setFitHeight(190);
-        image2.setPreserveRatio(true);
-        image2.setSmooth(true);
-        //utilização de um label para mostrar a quantidade de recursos
-        Label nRecursos = new Label(String.valueOf(BancoDeDados.getCidade().getRecursos()));
-        nRecursos.setStyle("-fx-font-size: 15pt; -fx-font-weight: bold; -fx-text-fill: black;");
-
-        //Imagem da barra de baterias
-        ImageView image3 = new ImageView(new Image(getClass().getResourceAsStream("/sprites/NativoCidade/barraDeBaterias.png")));
-        image3.setFitWidth(120);
-        image3.setFitHeight(120);
-        image3.setPreserveRatio(true);
-        image3.setSmooth(true);
-        //utilização de um label para mostrar a quantidade de baterias
-        Label nBaterias = new Label(String.valueOf(BancoDeDados.getCidade().getBaterias()));
-        nBaterias.setStyle("-fx-font-size: 15pt; -fx-font-weight: bold; -fx-text-fill: black;");
-
         //imagem da arvore
         ImageView image5;
         //coloca as arvores em nas 2 ultimas colunas do gridpane
@@ -304,11 +311,6 @@ public class CidadeController implements Initializable {
             image5.setSmooth(true);
             gridCidade.add(image5, 47, i);
         }
-        //Adiciona a barra de recursos e a barra de baterias
-        gridCidade.add(image2, 39, 1);
-        gridCidade.add(image3, 46, 1);
-        gridCidade.add(nRecursos, 44, 1);
-        gridCidade.add(nBaterias, 48, 1);
     }
 
     /**Método para abrir o menu para construir os prédios
@@ -367,12 +369,25 @@ public class CidadeController implements Initializable {
         menu.setScene(cena);
         //evento para construir a fabrica, caso clique nela
         stackPaneFabrica.setOnMouseClicked(mouseEvent -> {
-            construirPredio(hboxMeio, stackPaneFabrica, predioFabrica, 0);
+            //verifica se a cidade tem recurso suficiente para construir
+            if (BancoDeDados.getCidade().getRecursos() >= 0) {
+                //exibe um popup de confirmação de construção
+                if (confirmar()) {
+                    //adiciona o stackpane do prédio na cidade
+                    addPredio(predioFabrica.getPosicaoY(), predioFabrica.getPosicaoX(), predioFabrica.getStackPredio());
+                    //remove o prédio do menu de construção
+                    hboxMeio.getChildren().remove(stackPaneFabrica);
+                    //coloca o prédio como construído
+                    predioFabrica.setConstruido();
+                }
+            } else {
+                exibirMensagem();
+            }
             menu.close();
         });
         //evento para construir a fabrica de bateria caso clique nela
         stackPaneFabricaBateria.setOnMouseClicked(mouseEvent -> {
-            construirPredio(hboxMeio, stackPaneFabricaBateria, predioBateria, 0);
+            construirPredio(hboxMeio, stackPaneFabricaBateria, predioBateria, 100);
             menu.close();
         });
         //sáida da stage
@@ -492,6 +507,8 @@ public class CidadeController implements Initializable {
                 hbox.getChildren().remove(stackPaneRobo);
                 //coloca o robô como fabricado
                 robo.setFabricado();
+                //Diminui o valor do recurso
+                BancoDeDados.getCidade().diminuirRecursos(valor);
             }
         } else {
             //exibe um popup indicando a falta de recurso
@@ -506,19 +523,26 @@ public class CidadeController implements Initializable {
      * @param valor valor para construir o prédio
      */
     public void construirPredio(HBox hbox, StackPane stackPredio, PredioGeral predio, int valor) {
-        //verifica se a cidade tem recurso suficiente para construir
-        if (BancoDeDados.getCidade().getRecursos() >= valor) {
-            //exibe um popup de confirmação de construção
-            if (confirmar()) {
-                //adiciona o stackpane do prédio na cidade
-                addPredio(predio.getPosicaoY(), predio.getPosicaoX(), predio.getStackPredio());
-                //remove o prédio do menu de construção
-                hbox.getChildren().remove(stackPredio);
-                //coloca o prédio como construído
-                predio.setConstruido();
+        //verifica se o robô construtor está fabricado
+        if (roboConstrutor.isFabricado()) {
+            //verifica se a cidade tem recurso suficiente para construir
+            if (BancoDeDados.getCidade().getRecursos() >= valor) {
+                //exibe um popup de confirmação de construção
+                if (confirmar()) {
+                    //adiciona o stackpane do prédio na cidade
+                    addPredio(predio.getPosicaoY(), predio.getPosicaoX(), predio.getStackPredio());
+                    //remove o prédio do menu de construção
+                    hbox.getChildren().remove(stackPredio);
+                    //coloca o prédio como construído
+                    predio.setConstruido();
+                    //Diminui o valor do recurso
+                    BancoDeDados.getCidade().diminuirRecursos(valor);
+                }
+            } else {
+                exibirMensagem();
             }
         } else {
-            exibirMensagem();
+            erroConstrutor();
         }
     }
 
@@ -542,6 +566,40 @@ public class CidadeController implements Initializable {
         okButton.setOnAction(e -> alertaStage.close());
         // Adiciona os componentes ao VBox
         rootVBox.getChildren().addAll(mensagemLabel, okButton);
+        //define o scene e coloca o Vbox
+        Scene cena = new Scene(rootVBox, 350, 150);
+        //adiciona o scene ao stage
+        alertaStage.setScene(cena);
+        //exibe o stage ao jogador
+        alertaStage.showAndWait();
+    }
+
+    public void erroConstrutor() {
+        //cria um stage
+        Stage alertaStage = new Stage();
+        alertaStage.setTitle("Falta de construtor");
+        //Método para não deixar clicar na cidade
+        forcarResposta(alertaStage);
+        //Vbox para organizar as informações
+        VBox rootVBox = new VBox(15);
+        rootVBox.setPadding(new Insets(20));
+        rootVBox.setAlignment(Pos.CENTER);
+        // Label com a mensagem de erro
+        Label mensagemLabel = new Label("Você ainda não tem um robô construtor");
+        mensagemLabel.setStyle("-fx-font-size: 8pt; -fx-font-weight: bold; -fx-text-fill: red;");
+        Label mensagemLabel2 = new Label("Fabrique ele na fábrica de robôs");
+        mensagemLabel2.setStyle("-fx-font-size: 8pt; -fx-font-weight: bold; -fx-text-fill: red;");
+        Label mensagemLabel3 = new Label("Você ainda não tem a fábrica de robôs, construa ela");
+        mensagemLabel3.setStyle("-fx-font-size: 8pt; -fx-font-weight: bold; -fx-text-fill: red;");
+        //botão para fechar o stage
+        Button okButton = new Button("OK");
+        okButton.setOnAction(e -> alertaStage.close());
+        // Adiciona os componentes ao VBox
+        rootVBox.getChildren().addAll(mensagemLabel,mensagemLabel2);
+        if (!predioFabrica.getConstruido()){
+            rootVBox.getChildren().add(mensagemLabel3);
+        }
+        rootVBox.getChildren().add(okButton);
         //define o scene e coloca o Vbox
         Scene cena = new Scene(rootVBox, 350, 150);
         //adiciona o scene ao stage
@@ -606,5 +664,22 @@ public class CidadeController implements Initializable {
         menu.initOwner(stagePrincipal);
         // Define a modalidade como WINDOW_MODAL, serve para evitar que receba cliques na cidade
         menu.initModality(Modality.WINDOW_MODAL);
+    }
+
+    /**Método para recuperar o ùltimo save, reconstrói os prédios e refabrica os robôs
+     */
+    public void reconstruir(){
+        if (predioFabrica.getConstruido()){
+            addPredio(predioFabrica.getPosicaoY(), predioFabrica.getPosicaoX(),predioFabrica.getStackPredio());
+        }
+        if (predioBateria.getConstruido()){
+            addPredio(predioBateria.getPosicaoY(), predioBateria.getPosicaoX(),predioBateria.getStackPredio());
+        }
+        if (roboConstrutor.isFabricado()){
+            RoboController.addRobo(roboConstrutor.getRoboStack(),gridCidade,roboConstrutor.getPosicaoY(),roboConstrutor.getPosicaoX());
+        }
+        if (roboEngenheiro.isFabricado()){
+            RoboController.addRobo(roboEngenheiro.getRoboStack(),gridCidade,roboEngenheiro.getPosicaoY(),roboEngenheiro.getPosicaoX());
+        }
     }
 }

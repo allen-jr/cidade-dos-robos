@@ -16,8 +16,8 @@ public class PredioGeral {
     private int posicaoX;
     private int posicaoY;
     private int level = 1;
-    private ImageView imagePredio;
-    private StackPane stackPredio = new StackPane();
+    private transient ImageView imagePredio;
+    private transient StackPane stackPredio = new StackPane();
     private boolean construido;
 
     public void contruirStackPredio(){
@@ -32,8 +32,14 @@ public class PredioGeral {
         StackPane.setAlignment(labelPredio, Pos.TOP_CENTER);
         StackPane.setMargin(labelPredio, new Insets(-5,0,0,0));
 
-        stackPredio.getChildren().add(imagePredio);
-        stackPredio.getChildren().add(labelPredio);
+        if (stackPredio != null){
+            stackPredio.getChildren().add(imagePredio);
+            stackPredio.getChildren().add(labelPredio);
+        } else {
+            stackPredio = new StackPane();
+            stackPredio.getChildren().add(imagePredio);
+            stackPredio.getChildren().add(labelPredio);
+        }
 
     }
 
@@ -75,9 +81,5 @@ public class PredioGeral {
 
     public StackPane getStackPredio() {
         return this.stackPredio;
-    }
-
-    public boolean isConstruido() {
-        return this.construido;
     }
 }

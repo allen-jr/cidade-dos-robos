@@ -2,7 +2,6 @@ package Model;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
@@ -18,11 +17,11 @@ public class Robo {
     private int posicaoX, posicaoY, destinoX, destinoY;
     private boolean emMovimento;
     private String nome;
-    private StackPane stackRobo = new StackPane();
-    private ImageView spriteAtual;
-    private ImageView spriteBateria;
-    private Image sprite1;
-    private Image sprite2;
+    private transient StackPane stackRobo = new StackPane();
+    private transient ImageView spriteAtual;
+    private transient ImageView spriteBateria;
+    private transient Image sprite1;
+    private transient Image sprite2;
     private Bateria bateria = new Bateria();
     private boolean fabricado;
 
@@ -33,7 +32,7 @@ public class Robo {
         spriteAtual.setFitHeight(30);
 
         // Inicializa a ImageView da bateria com o sprite atual da Bateria
-        spriteBateria = bateria.getBateria();
+        spriteBateria = bateria.getImageBateria();
         spriteBateria.setFitWidth(30);
         spriteBateria.setFitHeight(20);
 
@@ -93,11 +92,19 @@ public class Robo {
     }
 
     public ImageView getImagemBateria() {
-        return this.bateria.getBateria();
+        return this.bateria.getImageBateria();
     }
 
     public int getPorcentoBateria() {
         return this.bateria.getPorcentagem();
+    }
+
+    public Bateria getBateria() {
+        if (this.bateria != null) {
+            return this.bateria;
+        }
+        this.bateria = new Bateria();
+        return this.bateria;
     }
 
     public boolean isFabricado() {
@@ -146,7 +153,7 @@ public class Robo {
             emMovimento = false;
             spriteAtual.setImage(sprite1);
             this.bateria.diminuir();
-            spriteBateria.setImage(bateria.getBateria().getImage());
+            spriteBateria.setImage(bateria.getImageBateria().getImage());
         }
     }
 
@@ -170,5 +177,10 @@ public class Robo {
 
     public void recarregarBateria(){
         this.bateria.recarregar();
+        spriteBateria.setImage(bateria.getImageBateria().getImage());
+    }
+    public void carregarSprites(Image sprite1, Image sprite2){
+        this.sprite1 = sprite1;
+        this.sprite2 = sprite2;
     }
 }

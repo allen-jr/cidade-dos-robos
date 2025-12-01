@@ -12,7 +12,6 @@ import javafx.scene.layout.*;
 import Model.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -72,6 +71,8 @@ public class CidadeController implements Initializable {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        //exibe as instruçoes do jogo
+        exibirInstrucoes();
         //Configura o gridpane
         configurarGrid();
         //Chama o método para carregar os status
@@ -682,5 +683,58 @@ public class CidadeController implements Initializable {
         if (roboEngenheiro.isFabricado()){
             RoboController.addRobo(roboEngenheiro.getRoboStack(),gridCidade,roboEngenheiro.getPosicaoY(),roboEngenheiro.getPosicaoX());
         }
+    }
+
+    public void exibirInstrucoes(){
+        //Novo stage
+        Stage instrucoes = new Stage();
+        instrucoes.setTitle("Instruções do Jogo");
+        instrucoes.setResizable(false);
+        //Orientações do jogo e "historinha"
+        Label titulo = new Label("Instruções do Jogo");
+        Label mensagem1 = new Label("Com o advento da tecnologia, os robôs foram aprimorados.");
+        Label mensagem2 = new Label("Eles são capazes de raciocinar de maneira semelhante aos humanos, ");
+        Label mensagem3 = new Label("mas eles perceberam que não são capazes de ter uma civilização");
+        Label mensagem4 = new Label("próspera sem uma ajudinha, e adivinha que eles escolheram? lóógico");
+        Label mensagem5 = new Label("que foi você! Quem mais seria capaz de tal responsabilidade? Seu");
+        Label mensagem6 = new Label("trabalho é simples, conduza essas pequenas maquinas ao sucesso!");
+        Label mensagem7 = new Label("Como fazer isso? Construa prédios que possa ajudar nessa jornada,");
+        Label mensagem8 = new Label("também fabrique robôs para realizar coisas inimagináveis!");
+        Label mensagem9 = new Label("Atenção, seu recursos iniciais são limitados: ");
+        Label mensagem10 = new Label("Recursos: 100");
+        Label mensagem11 = new Label("Baterias: 10");
+        Label mensagem12 = new Label("Dica: Construa a fàbrica de baterias para evitar que seus robôs");
+        Label mensagem13 = new Label("descarreguem, isso pode definir o ritmo de jogo! clique OK para começar");
+        //Define o estilo das mensagens
+        titulo.setStyle("-fx-font-size: 15pt; -fx-font-weight: bold; -fx-text-fill: Black;");
+        mensagem1.setStyle("-fx-font-size: 10pt; -fx-font-weight: bold; -fx-text-fill: Black;");
+        mensagem2.setStyle("-fx-font-size: 10pt; -fx-font-weight: bold; -fx-text-fill: Black;");
+        mensagem3.setStyle("-fx-font-size: 10pt; -fx-font-weight: bold; -fx-text-fill: Black;");
+        mensagem4.setStyle("-fx-font-size: 10pt; -fx-font-weight: bold; -fx-text-fill: Black;");
+        mensagem5.setStyle("-fx-font-size: 10pt; -fx-font-weight: bold; -fx-text-fill: Black;");
+        mensagem6.setStyle("-fx-font-size: 10pt; -fx-font-weight: bold; -fx-text-fill: Black;");
+        mensagem7.setStyle("-fx-font-size: 10pt; -fx-font-weight: bold; -fx-text-fill: Black;");
+        mensagem8.setStyle("-fx-font-size: 10pt; -fx-font-weight: bold; -fx-text-fill: Black;");
+        mensagem9.setStyle("-fx-font-size: 12pt; -fx-font-weight: bold; -fx-text-fill: Red;");
+        mensagem10.setStyle("-fx-font-size: 10pt; -fx-font-weight: bold; -fx-text-fill: Red;");
+        mensagem11.setStyle("-fx-font-size: 10pt; -fx-font-weight: bold; -fx-text-fill: Red;");
+        mensagem12.setStyle("-fx-font-size: 10pt; -fx-font-weight: bold; -fx-text-fill: Black;");
+        mensagem13.setStyle("-fx-font-size: 10pt; -fx-font-weight: bold; -fx-text-fill: Black;");
+        //Botão para começar o jogo
+        Button botaoOK = new Button("OK");
+        //Vbox para organizar as mensagens e o botão
+        VBox vbox = new VBox(15);
+        vbox.setAlignment(Pos.CENTER);
+        vbox.getChildren().addAll(titulo,mensagem1,mensagem2,mensagem3,mensagem4,mensagem5,mensagem6,
+                mensagem7,mensagem8,mensagem9,mensagem10,mensagem11,mensagem12,mensagem13,botaoOK);
+        //evento de clique do botão OK
+        botaoOK.setOnAction(e -> {
+            //fecha as instruções
+            instrucoes.close();
+        });
+        //define uma nova scene com o Vbox e as dimensões e coloca no stage
+        instrucoes.setScene(new Scene(vbox,500,600));
+        //mostra o stage
+        instrucoes.showAndWait();
     }
 }

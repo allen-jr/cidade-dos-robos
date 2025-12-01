@@ -69,4 +69,10 @@ public class BancoDeDados {
         cidade.getPredioBateria().contruirStackPredio();
         cidade.getPredioFabrica().contruirStackPredio();
     }
+
+    /**Método para apagar os dados e criar uma nova cidade
+     */
+    public static void novaCidade(){
+        cidade = new Cidade();
+    }
 }

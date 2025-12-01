@@ -737,4 +737,49 @@ public class CidadeController implements Initializable {
         //mostra o stage
         instrucoes.showAndWait();
     }
+
+    /**Método para exibir o menu principal e deixar o usuário carregar os dados ou deletar e criar os novos dados da cidade
+     */
+    public static void menuPrincipal(){
+        //Cria o novo stage
+        Stage menuPrincipal = new Stage();
+        menuPrincipal.setResizable(false);
+        menuPrincipal.setTitle("ROBOTS CITY");
+        //cria o label do nome do jogo
+        Label tituloJogo = new Label("ROBOTS CITY");
+        tituloJogo.setStyle("-fx-font-size: 15pt; -fx-font-weight: bold; -fx-text-fill: Black;");
+        //botões para carregar os dados e apagar os dados da cidade
+        Button botaoCarregarJogo = new Button("CARREGAR JOGO");
+        Button botaoNovoJogo = new Button("NOVO JOGO");
+        //evento de clique no botão de carregar os dados da cidade
+        botaoCarregarJogo.setOnAction(e -> {
+            //carrega os dados da cidade
+            BancoDeDados.carregar();
+            //fecha o stage do menu principal
+            menuPrincipal.close();
+        });
+        //evento de clique no botão e criar uma nova cidade
+        botaoNovoJogo.setOnAction(e -> {
+            //apaga os dados e cria uma nova cidade
+            BancoDeDados.novaCidade();
+            //fecha o stage do menu principal
+            menuPrincipal.close();
+        });
+        //cria o Vbox para organizar o label e os botôes verticalmente e no centro da janela
+        VBox vbox = new VBox(15);
+        vbox.setAlignment(Pos.CENTER);
+        //adiciona o label e os botões no vbox
+        vbox.getChildren().addAll(tituloJogo,botaoCarregarJogo,botaoNovoJogo);
+        //cria uma scene, coloca o vbox nela e define as dimensões dela
+        Scene scene = new Scene(vbox,500,600);
+        //adiciona a scene no stage
+        menuPrincipal.setScene(scene);
+        //evento de clique no x do stage
+        menuPrincipal.setOnCloseRequest( windowEvent -> {
+            //carrega os dados
+            BancoDeDados.carregar();
+        });
+        //mostra o stage
+        menuPrincipal.showAndWait();
+    }
 }

@@ -165,6 +165,13 @@ public class CidadeController implements Initializable {
             exibirMenuFabricar();
             mouseEvent.consume();
         });
+        //evento de clique na fabrica de bateria
+        stackFabricaBateria.setOnMouseClicked(mouseEvent -> {
+            if(stackFabricaBateria != null){
+                //abre o menu de fabricar bateria
+                menufabricarBateria();
+            }
+        });
         //evento de clique na cidade para mover o robô
         gridCidade.setOnMouseClicked(mouseEvent -> {
             //se roboSelecionado1 for true, move o robo explorador
@@ -685,6 +692,8 @@ public class CidadeController implements Initializable {
         }
     }
 
+    /**Método para exibir instruções sobre o jogo
+     */
     public void exibirInstrucoes(){
         //Novo stage
         Stage instrucoes = new Stage();
@@ -736,6 +745,144 @@ public class CidadeController implements Initializable {
         instrucoes.setScene(new Scene(vbox,500,600));
         //mostra o stage
         instrucoes.showAndWait();
+    }
+
+    /**Método para o menu de fabricação de baterias
+     */
+    public void menufabricarBateria(){
+        //cria um novo stage
+        Stage menuBateria = new Stage();
+        menuBateria.setTitle("PRODUÇÃO DE BATERIA");
+        menuBateria.setResizable(false);
+        //não deixa o jogador clicar na cidade ate terminar a operação
+        forcarResposta(menuBateria);
+        //cria um label com o nome produzir
+        Label titulo = new Label("MENU DE PRODUÇÃO DE BATERIA");
+        titulo.setStyle("-fx-font-size: 15pt; -fx-font-weight: bold; -fx-text-fill: Black;");
+        //cria a imageview da bateria para produzir
+        ImageView imageBateria = new ImageView(new Image(getClass().getResourceAsStream("/sprites/bateria/bateriaProduzir.png")));
+        imageBateria.setFitHeight(100);
+        imageBateria.setFitWidth(100);
+        imageBateria.setPreserveRatio(true);
+        imageBateria.setSmooth(true);
+        //cria a imageview do valor da bateria
+        ImageView imageValor = new ImageView(new Image(getClass().getResourceAsStream("/sprites/Valores/valor_0.png")));
+        imageValor.setFitHeight(70);
+        imageValor.setFitWidth(70);
+        imageValor.setPreserveRatio(true);
+        imageValor.setSmooth(true);
+        //cria um label com o nome produzir
+        Label produzir = new Label("PRODUZIR");
+        produzir.setStyle("-fx-font-size: 10pt; -fx-font-weight: bold; -fx-text-fill: Black;");
+        //cria um stackpane para colocar
+        StackPane stackBateria = new StackPane();
+        stackBateria.setAlignment(Pos.CENTER);
+        //coloca a imageview da bateria, a imageview do valor e a mensagem de produzir
+        stackBateria.getChildren().addAll(imageBateria,imageValor,produzir);
+        StackPane.setMargin(imageValor, new Insets(+150,0,0,0));
+        StackPane.setMargin(produzir, new Insets(-150,0,0,0));
+        //cria um botão para fechar o menu
+        Button botaoOK = new Button("OK");
+        //cria um vbox para organizar as informações verticalmente
+        VBox vbox = new VBox(15);
+        //coloca um alinhamento no vbox
+        vbox.setAlignment(Pos.CENTER);
+        //Adiciona o stackpane no vbox
+        vbox.getChildren().addAll(titulo,stackBateria,botaoOK);
+        //cria uma scene, coloca o vbox na scene e coloca a scene no stage
+        menuBateria.setScene(new Scene(vbox,500,300));
+        //evento de clique no stackpane da bateria
+        stackBateria.setOnMouseClicked(e -> {
+            //verifica se o robo engenheiro esta fabricado
+            if (roboEngenheiro.isFabricado()){
+                //verifica se a cidade tem recursos suficientes
+                if (BancoDeDados.getCidade().getRecursos() >= 0){
+                    if (confirmar()){
+                        //adiciona 1 bateria na cidade obs.: a interface pode não atualizar o numero de bateria, caso aconteça reinicie o jogo
+                        BancoDeDados.getCidade().adicionarBaterias(1);
+                        //exibe a mensagem de produção
+                        mensagemDeProducao();
+                    }
+                } else {
+                    //exibe a mensagem caso não tenha recursos suficientes
+                    exibirMensagem();
+                }
+            } else {
+                //exibe a mensagem caso não tenha o robo engenheiro fabricado
+                erroEngenheiro();
+            }
+        });
+        //evento de clique no botao Ok
+        botaoOK.setOnMouseClicked(e -> {
+            //fecha o stage
+            menuBateria.close();
+        });
+        //mostra o stage
+        menuBateria.showAndWait();
+    }
+
+    public void mensagemDeProducao(){
+        //cria um novo stage
+        Stage  mensagemDeProducao = new Stage();
+        mensagemDeProducao.setTitle("SUCESSO");
+        mensagemDeProducao.setResizable(false);
+        //não deixa o jogador clicar no local fora da mensagem
+        forcarResposta(mensagemDeProducao);
+        //cria um label informando
+        Label mensagem = new Label("Produção bem sucedida!");
+        mensagem.setStyle("-fx-font-size: 15pt; -fx-font-weight: bold; -fx-text-fill: Black;");
+        //botão de ok para confirmar
+        Button botaoOk = new Button("OK");
+        //vbox para organizar as informações verticalmente
+        VBox vbox = new VBox(15);
+        vbox.setAlignment(Pos.CENTER);
+        //adiciona as informações ao vbox
+        vbox.getChildren().addAll(mensagem,botaoOk);
+        //evento de clique no botão ok
+        botaoOk.setOnMouseClicked(e -> {
+            //fecha a janela
+            mensagemDeProducao.close();
+        });
+        //cria o scene com vbox e coloca no stage
+        mensagemDeProducao.setScene(new Scene(vbox,300,200));
+        //mostra o stage
+        mensagemDeProducao.showAndWait();
+    }
+
+    /**Método para exibir a mensagem de falta de robô engenheiro
+     */
+    public void erroEngenheiro(){
+        //cria um stage
+        Stage alertaStage = new Stage();
+        alertaStage.setTitle("Falta de Engenheiro");
+        //Método para não deixar clicar na cidade
+        forcarResposta(alertaStage);
+        //Vbox para organizar as informações
+        VBox rootVBox = new VBox(15);
+        rootVBox.setPadding(new Insets(20));
+        rootVBox.setAlignment(Pos.CENTER);
+        // Label com a mensagem de erro
+        Label mensagemLabel = new Label("Você ainda não tem um robô engenheiro");
+        mensagemLabel.setStyle("-fx-font-size: 8pt; -fx-font-weight: bold; -fx-text-fill: red;");
+        Label mensagemLabel2 = new Label("Fabrique ele na fábrica de robôs");
+        mensagemLabel2.setStyle("-fx-font-size: 8pt; -fx-font-weight: bold; -fx-text-fill: red;");
+        Label mensagemLabel3 = new Label("Você ainda não tem a fábrica de robôs, construa ela");
+        mensagemLabel3.setStyle("-fx-font-size: 8pt; -fx-font-weight: bold; -fx-text-fill: red;");
+        //botão para fechar o stage
+        Button okButton = new Button("OK");
+        okButton.setOnAction(e -> alertaStage.close());
+        // Adiciona os componentes ao VBox
+        rootVBox.getChildren().addAll(mensagemLabel,mensagemLabel2);
+        if (!fabricaRobo.getConstruido()){
+            rootVBox.getChildren().add(mensagemLabel3);
+        }
+        rootVBox.getChildren().add(okButton);
+        //define o scene e coloca o Vbox
+        Scene cena = new Scene(rootVBox, 350, 150);
+        //adiciona o scene ao stage
+        alertaStage.setScene(cena);
+        //exibe o stage ao jogador
+        alertaStage.showAndWait();
     }
 
     /**Método para exibir o menu principal e deixar o usuário carregar os dados ou deletar e criar os novos dados da cidade
